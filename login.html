@@ -1,0 +1,107 @@
+<html>
+<head></head>
+<body>
+<div id="fb-root"></div>
+<script>
+  window.fbAsyncInit = function() {
+    console.log('Welcome to use Carpool_Canada!');
+  FB.init({
+    appId      : '564717483583708', // App ID
+    channelUrl : '//localhost/login.html', // Channel File
+    status     : true, // check login status
+    cookie     : true, // enable cookies to allow the server to access the session
+    xfbml      : true,  // parse XFBML
+    
+  });
+
+   
+ FB.getLoginStatus(function(response) {
+  if (response.status === 'connected') {
+    // the user is logged in and has authenticated your
+    // app, and response.authResponse supplies
+    // the user's ID, a valid access token, a signed
+    // request, and the time the access token 
+    // and signed request each expire
+    var uid = response.authResponse.userID;
+    var accessToken = response.authResponse.accessToken;
+    
+    console.log("connected to Facebook");    
+    console.log("userID: "+uid);
+    console.log("accessToken: "+accessToken);
+    getUser();
+    
+  } else if (response.status === 'not_authorized') {
+    // the user is logged in to Facebook, 
+    FB.Login();
+    // but has not authenticated your app
+  } else {
+    FB.Login();
+  }
+  
+  }); 
+};
+
+  // Load the SDK asynchronously
+  (function(d){
+   var js, id = 'facebook-jssdk', ref = d.getElementsByTagName('script')[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement('script'); js.id = id; js.async = true;
+   js.src = "//connect.facebook.net/en_US/all.js";
+   ref.parentNode.insertBefore(js, ref);
+  }(document));
+
+  function getUser() {
+
+    console.log('Welcome!  Fetching your information.... ');
+    FB.api('/me', function(response) {
+      console.log('Good to see you, ' + response.name + '.');
+      console.log('Email: '+response.email); 
+      if(response.hometown !=null)    
+      console.log('Hometown: '+response.hometown.name);
+      
+      console.log('Education History: ');
+      if(response.education !=null){
+      for(var i=0; i<response.education.length; i++){
+      if(response.education[i].school !=null)
+      console.log('School: '+response.education[i].school.name);
+
+      if(response.education[i].year != null)
+      console.log('year: '+response.education[i].year.name);
+
+      if(response.education[i].concentration !=null)
+      console.log('concentration: '+response.education[i].concentration[0].name);
+
+      if(response.education[i].type !=null)
+      console.log('type: '+response.education[i].type);
+
+      }
+    }
+    if(response.gender !=null)
+      console.log('gender: '+response.gender);
+       },{'scope' : 'user_hometown,user_education,gender'});// Add Permission to get access of userInfo
+      }
+
+    
+</script>
+
+<!--
+  Below we include the Login Button social plugin. This button uses the JavaScript SDK to
+  present a graphical Login button that triggers the FB.login() function when clicked.
+
+  Learn more about options for the login button plugin:
+  /docs/reference/plugins/login/ -->
+ 
+<fb:login-button show-faces="true" scope="email"  width="200" max-rows="1"></fb:login-button>
+<div id='sharelink'>
+<a href="#" 
+  onclick="
+    window.open(
+      'https://www.facebook.com/sharer/sharer.php?u='+encodeURIComponent(location.href), 
+      'facebook-share-dialog', 
+      'width=626,height=436'); 
+    return false;">
+  Share on Facebook
+</a>
+</div>
+</body>
+</html>
